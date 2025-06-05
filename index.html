@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Rowerowy IBIS</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app-container">
+        <div id="controls">
+            <select id="line-select"></select>
+            <select id="direction-select"></select>
+            <button id="start-button">START</button>
+        </div>
+        <div id="map"></div>
+        <div id="info-panel">
+            <p>Następny punkt: <strong id="next-stop-name">---</strong></p>
+            <p>Dystans: <strong id="distance-to-stop">---</strong> m</p>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
