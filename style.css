@@ -1,53 +1,145 @@
+/* Definicje zmiennych kolorów i animacji */
+:root {
+    --bg-color: #121212;
+    --primary-text: #EAEAEA;
+    --secondary-text: #A0A0A0;
+    --panel-bg: rgba(28, 28, 30, 0.85);
+    --accent-color: #0A84FF;
+    --green-color: #30D158;
+    --red-color: #FF453A;
+    --border-color: rgba(84, 84, 88, 0.65);
+    /* Bezpieczne obszary dla iPhone'a */
+    --safe-area-top: env(safe-area-inset-top, 0px);
+    --safe-area-bottom: env(safe-area-inset-bottom, 20px);
+}
+
 body, html {
     margin: 0;
     padding: 0;
     height: 100%;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    overflow: hidden; /* Zapobiega przewijaniu strony */
-}
-
-#app-container {
-    display: flex;
-    flex-direction: column;
-    height: 100vh; /* Pełna wysokość ekranu */
-}
-
-#controls {
-    padding: 10px;
-    background-color: #fff;
-    border-bottom: 1px solid #ccc;
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-}
-
-#controls select, #controls button {
-    padding: 8px;
-    font-size: 16px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
-#controls button {
-    background-color: #28a745;
-    color: white;
-    font-weight: bold;
-    cursor: pointer;
+    width: 100%;
+    overflow: hidden;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--primary-text);
 }
 
 #map {
-    flex-grow: 1;
-    background-color: #eee;
+    height: 100%;
+    width: 100%;
+    background-color: #000;
 }
 
+/* Stylizacja kontrolek na górze */
+#controls {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 10px;
+    padding-top: calc(10px + var(--safe-area-top));
+    background: linear-gradient(to bottom, rgba(0,0,0,0.8), rgba(0,0,0,0));
+    display: flex;
+    gap: 10px;
+    z-index: 1001;
+}
+
+#controls select, #controls button {
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: 12px;
+    border: none;
+    font-weight: 600;
+    background-color: var(--panel-bg);
+    color: var(--primary-text);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+#controls button {
+    background-color: var(--green-color);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Panel informacyjny na dole */
 #info-panel {
-    padding: 12px;
-    background-color: #333;
-    color: white;
-    text-align: center;
     position: fixed;
     bottom: 0;
     left: 0;
-    width: 100%;
-    box-sizing: border-box;
+    right: 0;
+    background-color: var(--panel-bg);
+    padding: 15px 20px;
+    padding-bottom: var(--safe-area-bottom);
+    border-top: 1px solid var(--border-color);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    /* Animacja wejścia */
+    transform: translateY(100%);
+    animation: slideIn 0.5s forwards ease-out;
+}
+
+@keyframes slideIn {
+    to { transform: translateY(0); }
+}
+
+.stop-info {
+    transition: opacity 0.5s ease;
+}
+
+.stop-info.fade-out {
+    animation: fadeOut 0.4s forwards;
+}
+
+@keyframes fadeOut {
+    to { opacity: 0; transform: translateY(-20px); }
+}
+
+.label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--secondary-text);
+    margin: 0 0 4px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.current-stop h2 {
+    font-size: 24px;
+    margin: 0;
+    color: var(--primary-text);
+    font-weight: 700;
+}
+
+.current-stop .distance {
+    font-size: 18px;
+    margin: 4px 0 0 0;
+    color: var(--accent-color);
+    font-weight: 600;
+}
+
+.next-in-line h3 {
+    font-size: 18px;
+    margin: 0;
+    color: var(--secondary-text);
+    font-weight: 600;
+}
+
+/* Dostosowanie stylu Leaflet do ciemnego motywu */
+.leaflet-tile-pane {
+    filter: invert(1) hue-rotate(180deg) brightness(95%) contrast(90%);
+}
+
+.leaflet-control-zoom a {
+    background-color: var(--panel-bg) !important;
+    color: var(--primary-text) !important;
+    border-color: var(--border-color) !important;
+}
+
+.leaflet-marker-icon {
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
 }
