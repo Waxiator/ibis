@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Elementy ekranu mapy
     const backButton = document.getElementById('back-button');
+    const followButton = document.getElementById('follow-button'); // NOWOŚĆ
     const nextStopNameEl = document.getElementById('next-stop-name');
     const distanceToStopEl = document.getElementById('distance-to-stop');
     const upcomingStopNameEl = document.getElementById('upcoming-stop-name');
@@ -24,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let inputBuffer = "";
     let selectedLine = null;
     let watchId = null;
+    let isFollowing = true; // NOWOŚĆ: Stan śledzenia
 
     // Zmienne mapy i warstw
     let map = null;
@@ -32,14 +34,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentStopIndex = -1;
     
     // --- GŁÓWNA LOGIKA APLIKACJI ---
-
-    fetch('moje_trasy.json')
-        .then(response => response.json())
-        .then(data => { allData = data; });
+    fetch('moje_trasy.json').then(r => r.json()).then(data => { allData = data; });
 
     keypad.addEventListener('click', (e) => {
-        if (!e.target.classList.contains('keypad-btn')) return;
-        const key = e.target.textContent;
+        if (!e.target.closest('.keypad-btn')) return;
+        const key = e.target.closest('.keypad-btn').textContent;
         if (key === 'C') resetSetup();
         else if (key === 'OK') handleOkClick();
         else { inputBuffer += key; updateDisplay(); }
@@ -56,8 +55,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- FUNKCJE ZARZĄDZAJĄCE STANEM USTAWIEŃ ---
+    // NOWOŚĆ: Obsługa przycisku śledzenia
+    followButton.addEventListener('click', () => {
+        isFollowing = !isFollowing; // Zmień stan
+        followButton.classList.toggle('follow-active', isFollowing);
+        if (isFollowing && userDot) {
+            map.panTo(userDot.getLatLng()); // Jeśli włączamy, wycentruj od razu
+        }
+    });
 
+    // --- FUNKCJE ZARZĄDZAJĄCE STANEM USTAWIEŃ ---
     function resetSetup() {
         currentSetupState = 'ENTERING_LINE';
         inputBuffer = "";
@@ -83,56 +90,44 @@ document.addEventListener('DOMContentLoaded', () => {
                 currentSetupState = 'CHOOSING_DIRECTION';
                 inputBuffer = "";
                 updateDisplay();
-            } else {
-                ibisLine2.textContent = 'BŁĄD: NIE ZNALEZIONO LINII';
-                inputBuffer = "";
-            }
+            } else { ibisLine2.textContent = 'BŁĄD: NIE ZNALEZIONO LINII'; inputBuffer = ""; }
         } else if (currentSetupState === 'CHOOSING_DIRECTION') {
             const directionIndex = parseInt(inputBuffer, 10) - 1;
             if (selectedLine.kierunki[directionIndex]) {
                 startNavigation(selectedLine.kierunki[directionIndex].przystanki);
-            } else {
-                ibisLine2.textContent = 'BŁĄD: ZŁY KIERUNEK';
-                inputBuffer = "";
-            }
+            } else { ibisLine2.textContent = 'BŁĄD: ZŁY KIERUNEK'; inputBuffer = ""; }
         }
     }
 
     // --- FUNKCJE ZARZĄDZAJĄCE NAWIGACJĄ I MAPĄ ---
-
     function initializeMap() {
         if (map) return;
-        
-        // NOWOŚĆ: Wyłączenie przybliżania podwójnym kliknięciem
         map = L.map('map', { zoomControl: false, doubleClickZoom: false }).setView([52.14, 21.23], 14);
-        
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
         L.control.zoom({ position: 'bottomright' }).addTo(map);
-
-        // NOWOŚĆ: Definicja ikon
-        const busIcon = L.icon({
-            iconUrl: 'https://cdn-icons-png.flaticon.com/512/3448/3448339.png', // URL do ikony autobusu
-            iconSize: [32, 32],
-            iconAnchor: [16, 32],
-        });
-
-        // NOWOŚĆ: Stworzenie warstw dla lokalizacji i przystanku
+        const busIcon = L.icon({ iconUrl: 'https://cdn-icons-png.flaticon.com/512/3448/3448339.png', iconSize: [32, 32], iconAnchor: [16, 32] });
         userDot = L.circleMarker([0, 0], { radius: 8, className: 'user-location-dot' }).addTo(map);
         userAccuracyCircle = L.circle([0, 0], { radius: 0, className: 'user-accuracy-circle' }).addTo(map);
         stopMarker = L.marker([0, 0], { icon: busIcon }).addTo(map);
+        
+        // NOWOŚĆ: Wyłączanie śledzenia, gdy użytkownik ręcznie przesunie mapę
+        map.on('dragstart', () => {
+            isFollowing = false;
+            followButton.classList.remove('follow-active');
+        });
     }
 
     function startNavigation(stops) {
         currentStops = stops;
         currentStopIndex = -1;
+        isFollowing = true; // Domyślnie włącz śledzenie
+        followButton.classList.add('follow-active');
         
         setupScreen.classList.add('hidden');
         mapScreen.classList.remove('hidden');
         
         initializeMap();
         setTimeout(() => map.invalidateSize(), 100);
-
-        // NOWOŚĆ: Rysowanie pełnej trasy na starcie
         drawFullRouteLine(stops);
 
         if (navigator.geolocation) {
@@ -144,13 +139,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const { latitude, longitude, accuracy } = position.coords;
         const userCoords = [latitude, longitude];
         
-        // NOWOŚĆ: Aktualizacja kropki i okręgu dokładności
         userDot.setLatLng(userCoords);
         userAccuracyCircle.setLatLng(userCoords).setRadius(accuracy);
 
+        // NOWOŚĆ: Przesuwaj mapę tylko, jeśli tryb śledzenia jest włączony
+        if (isFollowing) {
+            map.panTo(userCoords);
+        }
+
         if (currentStopIndex === -1) {
             currentStopIndex = findNearestStopIndex(latitude, longitude, currentStops);
-            map.setView(userCoords, 16);
+            if (!isFollowing) map.setView(userCoords, 16); // Ustaw widok tylko na starcie, jeśli śledzenie jest wyłączone
         }
 
         const targetStop = currentStops[currentStopIndex];
@@ -173,18 +172,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // NOWOŚĆ: Funkcja do rysowania pełnej trasy (przystanek po przystanku)
     function drawFullRouteLine(stops) {
-        if (map && fullRoutePolyline) {
-            map.removeLayer(fullRoutePolyline);
-        }
+        if (map && fullRoutePolyline) map.removeLayer(fullRoutePolyline);
         const routePoints = stops.map(stop => stop.wspolrzedne);
-        fullRoutePolyline = L.polyline(routePoints, { 
-            color: '#888', // Szary kolor dla ogólnej trasy
-            weight: 4, 
-            opacity: 0.7,
-            dashArray: '5, 10' // Linia przerywana
-        }).addTo(map);
+        fullRoutePolyline = L.polyline(routePoints, { color: '#888', weight: 4, opacity: 0.7, dashArray: '5, 10' }).addTo(map);
     }
 
     async function drawRouteToNextStop(startCoords, endCoords) {
@@ -201,20 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) { console.error('Błąd trasy:', error); }
     }
 
-    function calculateDistance(lat1, lon1, lat2, lon2) {
-        const R = 6371e3; const p1 = lat1 * Math.PI / 180; const p2 = lat2 * Math.PI / 180;
-        const deltaP = (lat2 - lat1) * Math.PI / 180; const deltaL = (lon2 - lon1) * Math.PI / 180;
-        const a = Math.sin(deltaP/2)*Math.sin(deltaP/2) + Math.cos(p1)*Math.cos(p2)*Math.sin(deltaL/2)*Math.sin(deltaL/2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); return R * c;
-    }
-
-    function findNearestStopIndex(userLat, userLon, stops) {
-        let nearestIndex = 0; let minDistance = Infinity;
-        stops.forEach((stop, index) => {
-            const d = calculateDistance(userLat, userLon, stop.wspolrzedne[0], stop.wspolrzedne[1]);
-            if (d < minDistance) { minDistance = d; nearestIndex = index; }
-        }); return nearestIndex;
-    }
-
+    function calculateDistance(lat1, lon1, lat2, lon2) { const R = 6371e3; const p1=lat1*Math.PI/180; const p2=lat2*Math.PI/180; const dP=(lat2-lat1)*Math.PI/180; const dL=(lon2-lon1)*Math.PI/180; const a=Math.sin(dP/2)*Math.sin(dP/2)+Math.cos(p1)*Math.cos(p2)*Math.sin(dL/2)*Math.sin(dL/2); const c=2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a)); return R*c; }
+    function findNearestStopIndex(userLat, userLon, stops) { let nearestIndex=0; let minDistance=Infinity; stops.forEach((stop,index)=>{ const d=calculateDistance(userLat,userLon,stop.wspolrzedne[0],stop.wspolrzedne[1]); if(d<minDistance){minDistance=d; nearestIndex=index;}}); return nearestIndex; }
     function handleError(error) { alert(`BŁĄD GEOLOKALIZACJI (${error.code}): ${error.message}`); }
 });
