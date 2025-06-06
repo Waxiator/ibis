@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
 
     // --- SEKCJA KONFIGURACJI I REFERENCJI DO ELEMENTÓW ---
-    const ORS_API_KEY = 'TWOJ_KLUCZ_API';
+    const ORS_API_KEY = '5b3ce3597851110001cf6248a991e35a46bb42e081be692630cc09ac';
 
     // Ekrany
     const setupScreen = document.getElementById('setup-screen');
