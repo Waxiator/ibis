@@ -1,212 +1,201 @@
 document.addEventListener('DOMContentLoaded', () => {
 
-    // --- SEKCJA KONFIGURACJI I INICJALIZACJI ---
-
-    // WAŻNE: Wklej tutaj swój klucz API z OpenRouteService
+    // --- SEKCJA KONFIGURACJI I REFERENCJI DO ELEMENTÓW ---
     const ORS_API_KEY = 'TWOJ_KLUCZ_API';
 
-    const map = L.map('map', { zoomControl: false }).setView([52.14, 21.23], 14);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        attribution: '© OpenStreetMap'
-    }).addTo(map);
-    L.control.zoom({ position: 'bottomright' }).addTo(map);
-    setTimeout(() => map.invalidateSize(), 100);
+    // Ekrany
+    const setupScreen = document.getElementById('setup-screen');
+    const mapScreen = document.getElementById('map-screen');
 
-    const userMarker = L.marker([0, 0]).addTo(map);
-    const stopMarker = L.marker([0, 0]).addTo(map);
-    let routePolyline = null; // Warstwa do rysowania trasy
+    // Elementy ekranu ustawień
+    const ibisLine1 = document.getElementById('ibis-line-1');
+    const ibisLine2 = document.getElementById('ibis-line-2');
+    const keypad = document.getElementById('keypad');
 
-    const lineSelect = document.getElementById('line-select');
-    const directionSelect = document.getElementById('direction-select');
-    const startButton = document.getElementById('start-button');
+    // Elementy ekranu mapy
+    const backButton = document.getElementById('back-button');
     const nextStopNameEl = document.getElementById('next-stop-name');
     const distanceToStopEl = document.getElementById('distance-to-stop');
     const upcomingStopNameEl = document.getElementById('upcoming-stop-name');
-    const infoPanel = document.getElementById('info-panel');
 
+    // Zmienne stanu aplikacji
     let allData = null;
+    let currentSetupState = 'ENTERING_LINE'; // 'ENTERING_LINE' lub 'CHOOSING_DIRECTION'
+    let inputBuffer = "";
+    let selectedLine = null;
+    let watchId = null;
+
+    // Zmienne mapy
+    let map = null;
+    let userMarker, stopMarker, routePolyline;
     let currentStops = [];
     let currentStopIndex = -1;
-    let watchId = null;
-    let lastRouteDrawTime = 0; // Ogranicznik zapytań do API
+    
+    // --- GŁÓWNA LOGIKA APLIKACJI ---
 
-    // --- SEKCJA ŁADOWANIA DANYCH I OBSŁUGI UI ---
-
+    // 1. Wczytaj dane o trasach
     fetch('moje_trasy.json')
         .then(response => response.json())
-        .then(data => {
-            allData = data;
-            allData.linie.forEach((linia, index) => {
-                const option = new Option(`${linia.numer}: ${linia.nazwa}`, index);
-                lineSelect.add(option);
-            });
-            updateDirectionSelect();
-        });
+        .then(data => { allData = data; });
 
-    function updateDirectionSelect() {
-        const line = allData.linie[lineSelect.value];
-        directionSelect.innerHTML = '';
-        line.kierunki.forEach((kierunek, index) => {
-            const option = new Option(kierunek.nazwa, index);
-            directionSelect.add(option);
-        });
-    }
+    // 2. Obsługa klawiatury
+    keypad.addEventListener('click', (e) => {
+        if (!e.target.classList.contains('keypad-btn')) return;
 
-    lineSelect.addEventListener('change', updateDirectionSelect);
+        const key = e.target.textContent;
 
-    startButton.addEventListener('click', () => {
-        if (watchId) {
-            navigator.geolocation.clearWatch(watchId);
-            watchId = null;
-            startButton.textContent = 'START';
-            startButton.style.backgroundColor = 'var(--green-color)';
-            if (routePolyline) map.removeLayer(routePolyline);
-            return;
+        if (key === 'C') {
+            resetSetup();
+        } else if (key === 'OK') {
+            handleOkClick();
+        } else {
+            inputBuffer += key;
+            updateDisplay();
         }
-
-        const selectedLine = allData.linie[lineSelect.value];
-        const selectedDirection = selectedLine.kierunki[directionSelect.value];
-        currentStops = selectedDirection.przystanki;
-        currentStopIndex = -1;
-
-        startButton.textContent = 'STOP';
-        startButton.style.backgroundColor = 'var(--red-color)';
-        
-        startGeolocation();
+    });
+    
+    // 3. Obsługa przycisku "Wróć"
+    backButton.addEventListener('click', () => {
+        mapScreen.classList.add('hidden');
+        setupScreen.classList.remove('hidden');
+        resetSetup();
+        if (watchId) navigator.geolocation.clearWatch(watchId);
+        if (map && routePolyline) map.removeLayer(routePolyline);
     });
 
-    // --- SEKCJA GEOLOKALIZACJI I LOGIKI ---
+    // --- FUNKCJE ZARZĄDZAJĄCE STANEM USTAWIEŃ ---
 
-    function startGeolocation() {
-        if (navigator.geolocation) {
-            watchId = navigator.geolocation.watchPosition(
-                positionUpdate, 
-                handleError, 
-                { enableHighAccuracy: true }
-            );
-        } else {
-            alert("Geolokalizacja nie jest wspierana przez Twoją przeglądarkę.");
+    function resetSetup() {
+        currentSetupState = 'ENTERING_LINE';
+        inputBuffer = "";
+        selectedLine = null;
+        updateDisplay();
+    }
+
+    function updateDisplay() {
+        if (currentSetupState === 'ENTERING_LINE') {
+            ibisLine1.textContent = `LINIA: ${inputBuffer || '___'}`;
+            ibisLine2.textContent = 'PODAJ NR LINII I ZATWIERDŹ';
+        } else if (currentSetupState === 'CHOOSING_DIRECTION') {
+            ibisLine1.textContent = `LINIA: ${selectedLine.numer}`;
+            let directionsText = selectedLine.kierunki
+                .map((dir, index) => `${index + 1}. ${dir.nazwa}`)
+                .join('\n');
+            ibisLine2.textContent = `WYBIERZ KIERUNEK:\n${directionsText}`;
         }
     }
 
+    function handleOkClick() {
+        if (currentSetupState === 'ENTERING_LINE') {
+            selectedLine = allData.linie.find(l => l.numer === inputBuffer);
+            if (selectedLine) {
+                currentSetupState = 'CHOOSING_DIRECTION';
+                inputBuffer = "";
+                updateDisplay();
+            } else {
+                ibisLine2.textContent = 'BŁĄD: NIE ZNALEZIONO LINII';
+                inputBuffer = "";
+            }
+        } else if (currentSetupState === 'CHOOSING_DIRECTION') {
+            const directionIndex = parseInt(inputBuffer, 10) - 1;
+            if (selectedLine.kierunki[directionIndex]) {
+                const selectedDirection = selectedLine.kierunki[directionIndex];
+                startNavigation(selectedDirection.przystanki);
+            } else {
+                ibisLine2.textContent = 'BŁĄD: ZŁY KIERUNEK';
+                inputBuffer = "";
+            }
+        }
+    }
+
+    // --- FUNKCJE ZARZĄDZAJĄCE NAWIGACJĄ I MAPĄ ---
+
+    function initializeMap() {
+        if (map) return; // Inicjuj mapę tylko raz
+        map = L.map('map', { zoomControl: false }).setView([52.14, 21.23], 14);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+        L.control.zoom({ position: 'bottomright' }).addTo(map);
+        userMarker = L.marker([0, 0]).addTo(map);
+        stopMarker = L.marker([0, 0]).addTo(map);
+    }
+
+    function startNavigation(stops) {
+        currentStops = stops;
+        currentStopIndex = -1;
+        
+        setupScreen.classList.add('hidden');
+        mapScreen.classList.remove('hidden');
+        
+        initializeMap();
+        setTimeout(() => map.invalidateSize(), 100); // Ważne!
+
+        if (navigator.geolocation) {
+            watchId = navigator.geolocation.watchPosition(positionUpdate, handleError, { enableHighAccuracy: true });
+        } else {
+            alert("Geolokalizacja nie jest wspierana.");
+        }
+    }
+    
     function positionUpdate(position) {
+        // ... (reszta kodu nawigacji jest prawie identyczna jak poprzednio)
+        // Poniżej wklejamy kod z poprzedniej wersji, bo jest dobry!
         const { latitude, longitude } = position.coords;
         const userCoords = [latitude, longitude];
         userMarker.setLatLng(userCoords);
 
         if (currentStopIndex === -1) {
             currentStopIndex = findNearestStopIndex(latitude, longitude, currentStops);
-            map.setView(userCoords, 16); // Ustaw widok na użytkowniku na starcie
+            map.setView(userCoords, 16);
         }
 
         const targetStop = currentStops[currentStopIndex];
-        const upcomingStop = currentStops[currentStopIndex + 1]; // Kolejny przystanek
+        const upcomingStop = currentStops[currentStopIndex + 1];
 
-        updateUi(targetStop, upcomingStop, userCoords);
-        
-        // Rysuj trasę, ale nie częściej niż co 5 sekund
-        const now = Date.now();
-        if (now - lastRouteDrawTime > 5000) {
-            drawRouteToStop(userCoords, targetStop.wspolrzedne);
-            lastRouteDrawTime = now;
-        }
-        
-        const distance = calculateDistance(latitude, longitude, targetStop.wspolrzedne[0], targetStop.wspolrzedne[1]);
-        if (distance < 20) { // Zwiększamy próg do 20m
-            triggerNextStop();
-        }
-    }
-
-    function updateUi(target, upcoming, userCoords) {
-        stopMarker.setLatLng(target.wspolrzedne);
-        nextStopNameEl.innerText = target.nazwa;
-        
-        const distance = calculateDistance(userCoords[0], userCoords[1], target.wspolrzedne[0], target.wspolrzedne[1]);
+        stopMarker.setLatLng(targetStop.wspolrzedne);
+        nextStopNameEl.innerText = targetStop.nazwa;
+        const distance = calculateDistance(userCoords[0], userCoords[1], targetStop.wspolrzedne[0], targetStop.wspolrzedne[1]);
         distanceToStopEl.innerText = `${Math.round(distance)} m`;
+        upcomingStopNameEl.innerText = upcoming ? upcoming.nazwa : 'Koniec trasy';
 
-        if (upcoming) {
-            upcomingStopNameEl.innerText = upcoming.nazwa;
-        } else {
-            upcomingStopNameEl.innerText = 'Koniec trasy';
-        }
-    }
-    
-    // Funkcja do animacji i przejścia do kolejnego przystanku
-    function triggerNextStop() {
-        infoPanel.classList.add('fade-out');
-        
-        setTimeout(() => {
+        drawRouteToStop(userCoords, targetStop.wspolrzedne);
+
+        if (distance < 20) {
             currentStopIndex++;
             if (currentStopIndex >= currentStops.length) {
-                alert("Koniec trasy! Dobra robota!");
-                navigator.geolocation.clearWatch(watchId);
-                watchId = null;
-                startButton.textContent = 'START';
-                startButton.style.backgroundColor = 'var(--green-color)';
-            } else {
-                 // Reset animacji i update UI
-                infoPanel.classList.remove('fade-out');
-                const userCoords = userMarker.getLatLng();
-                positionUpdate({ coords: { latitude: userCoords.lat, longitude: userCoords.lng } });
+                alert("Koniec trasy!");
+                backButton.click(); // Wróć do menu
             }
-        }, 400); // Czas musi być zgodny z animacją CSS
+        }
     }
 
-    // --- SEKCJA ROUTINGU (NOWOŚĆ) ---
-
     async function drawRouteToStop(startCoords, endCoords) {
-        if (ORS_API_KEY === '5b3ce3597851110001cf6248a991e35a46bb42e081be692630cc09ac') {
-            console.warn("Wpisz swój klucz API OpenRouteService w pliku app.js!");
-            return;
-        }
-        
+        if (ORS_API_KEY === '5b3ce3597851110001cf6248a991e35a46bb42e081be692630cc09ac') return;
         const url = `https://api.openrouteservice.org/v2/directions/cycling-road?api_key=${ORS_API_KEY}&start=${startCoords[1]},${startCoords[0]}&end=${endCoords[1]},${endCoords[0]}`;
-
         try {
             const response = await fetch(url);
             const data = await response.json();
-            
             if (data.features && data.features.length > 0) {
-                const routeCoordinates = data.features[0].geometry.coordinates.map(c => [c[1], c[0]]); // Zamiana [lon, lat] na [lat, lon]
-                
-                if (routePolyline) {
-                    map.removeLayer(routePolyline);
-                }
+                const routeCoordinates = data.features[0].geometry.coordinates.map(c => [c[1], c[0]]);
+                if (routePolyline) map.removeLayer(routePolyline);
                 routePolyline = L.polyline(routeCoordinates, { color: '#0A84FF', weight: 5, opacity: 0.8 }).addTo(map);
             }
-        } catch (error) {
-            console.error('Błąd podczas pobierania trasy:', error);
-        }
+        } catch (error) { console.error('Błąd trasy:', error); }
     }
 
-    // --- SEKCJA FUNKCJI POMOCNICZYCH ---
-
     function calculateDistance(lat1, lon1, lat2, lon2) {
-        const R = 6371e3;
-        const p1 = lat1 * Math.PI / 180;
-        const p2 = lat2 * Math.PI / 180;
-        const deltaP = (lat2 - lat1) * Math.PI / 180;
-        const deltaL = (lon2 - lon1) * Math.PI / 180;
-        const a = Math.sin(deltaP / 2) * Math.sin(deltaP / 2) + Math.cos(p1) * Math.cos(p2) * Math.sin(deltaL / 2) * Math.sin(deltaL / 2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return R * c;
+        const R = 6371e3; const p1 = lat1 * Math.PI / 180; const p2 = lat2 * Math.PI / 180;
+        const deltaP = (lat2 - lat1) * Math.PI / 180; const deltaL = (lon2 - lon1) * Math.PI / 180;
+        const a = Math.sin(deltaP/2)*Math.sin(deltaP/2) + Math.cos(p1)*Math.cos(p2)*Math.sin(deltaL/2)*Math.sin(deltaL/2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); return R * c;
     }
 
     function findNearestStopIndex(userLat, userLon, stops) {
-        let nearestIndex = 0;
-        let minDistance = Infinity;
+        let nearestIndex = 0; let minDistance = Infinity;
         stops.forEach((stop, index) => {
-            const distance = calculateDistance(userLat, userLon, stop.wspolrzedne[0], stop.wspolrzedne[1]);
-            if (distance < minDistance) {
-                minDistance = distance;
-                nearestIndex = index;
-            }
-        });
-        return nearestIndex;
+            const d = calculateDistance(userLat, userLon, stop.wspolrzedne[0], stop.wspolrzedne[1]);
+            if (d < minDistance) { minDistance = d; nearestIndex = index; }
+        }); return nearestIndex;
     }
-    
-    function handleError(error) {
-        alert(`BŁĄD GEOLOKALIZACJI (${error.code}): ${error.message}`);
-    }
+
+    function handleError(error) { alert(`BŁĄD GEOLOKALIZACJI (${error.code}): ${error.message}`); }
 });

@@ -6,29 +6,47 @@
     <title>Rowerowy IBIS</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@500;700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="map"></div>
 
-    <div id="controls">
-        <select id="line-select"></select>
-        <select id="direction-select"></select>
-        <button id="start-button">START</button>
+    <div id="setup-screen">
+        <div id="ibis-display">
+            <div id="ibis-line-1">LINIA: ___</div>
+            <div id="ibis-line-2">PODAJ NR LINII</div>
+        </div>
+        <div id="keypad">
+            <button class="keypad-btn">1</button>
+            <button class="keypad-btn">2</button>
+            <button class="keypad-btn">3</button>
+            <button class="keypad-btn">4</button>
+            <button class="keypad-btn">5</button>
+            <button class="keypad-btn">6</button>
+            <button class="keypad-btn">7</button>
+            <button class="keypad-btn">8</button>
+            <button class="keypad-btn">9</button>
+            <button class="keypad-btn keypad-btn-util">C</button>
+            <button class="keypad-btn">0</button>
+            <button class="keypad-btn keypad-btn-util" id="keypad-ok">OK</button>
+        </div>
     </div>
 
-    <div id="info-panel">
-        <div class="stop-info current-stop">
-            <p class="label">NASTĘPNY PUNKT</p>
-            <h2 id="next-stop-name">Wybierz trasę</h2>
-            <p class="distance" id="distance-to-stop">i naciśnij START</p>
-        </div>
-        <div class="stop-info next-in-line">
-            <p class="label">KOLEJNY</p>
-            <h3 id="upcoming-stop-name">---</h3>
+    <div id="map-screen" class="hidden">
+        <div id="map"></div>
+        <div id="info-panel">
+            <button id="back-button">MENU</button>
+            <div class="stop-info current-stop">
+                <p class="label">NASTĘPNY PUNKT</p>
+                <h2 id="next-stop-name">---</h2>
+                <p class="distance" id="distance-to-stop">---</p>
+            </div>
+            <div class="stop-info next-in-line">
+                <p class="label">KOLEJNY</p>
+                <h3 id="upcoming-stop-name">---</h3>
+            </div>
         </div>
     </div>
 
