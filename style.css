@@ -50,19 +50,8 @@ body, html {
     font-weight: 700;
 }
 
-#ibis-line-1 {
-    font-size: 24px;
-    color: var(--display-text);
-    margin-bottom: 10px;
-    min-height: 28px;
-}
-
-#ibis-line-2 {
-    font-size: 16px;
-    color: var(--primary-text);
-    white-space: pre-wrap;
-    min-height: 40px;
-}
+#ibis-line-1 { font-size: 24px; color: var(--display-text); margin-bottom: 10px; min-height: 28px; }
+#ibis-line-2 { font-size: 16px; color: var(--primary-text); white-space: pre-wrap; min-height: 40px; }
 
 #keypad {
     display: grid;
@@ -85,25 +74,12 @@ body, html {
     transition: background-color 0.2s;
 }
 
-.keypad-btn:active {
-    background-color: var(--keypad-bg-hover);
-}
-
-.keypad-btn-util {
-    background-color: #555;
-}
+.keypad-btn:active { background-color: var(--keypad-bg-hover); }
+.keypad-btn-util { background-color: #555; }
 
 /* --- EKRAN MAPY --- */
-#map-screen {
-    height: 100%;
-    width: 100%;
-}
-
-#map {
-    height: 100%;
-    width: 100%;
-    background-color: #000;
-}
+#map-screen { height: 100%; width: 100%; }
+#map { height: 100%; width: 100%; background-color: #000; }
 
 #info-panel {
     position: fixed;
@@ -141,6 +117,31 @@ body, html {
 .current-stop .distance { font-size: 18px; margin: 4px 0 0 0; color: var(--accent-color); font-weight: 700; }
 .next-in-line h3 { font-size: 18px; margin: 0; color: var(--secondary-text); font-weight: 700; }
 
+/* --- NOWE STYLE DLA MAPY I IKON --- */
+
+/* Ciemny motyw dla mapy */
 .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) brightness(95%) contrast(90%); }
 .leaflet-control-zoom a { background-color: rgba(28, 28, 30, 0.85) !important; color: var(--primary-text) !important; border:none !important; }
 .leaflet-marker-icon { filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
+
+/* Styl dla niebieskiej kropki lokalizacji */
+.user-location-dot {
+    background-color: var(--accent-color);
+    border-radius: 50%;
+    border: 2px solid white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+/* Styl dla okręgu dokładności GPS */
+.user-accuracy-circle {
+    background-color: var(--accent-color);
+    opacity: 0.15;
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.9); }
+    70% { transform: scale(1); }
+    100% { transform: scale(0.9); }
+}

@@ -20,47 +20,40 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Zmienne stanu aplikacji
     let allData = null;
-    let currentSetupState = 'ENTERING_LINE'; // 'ENTERING_LINE' lub 'CHOOSING_DIRECTION'
+    let currentSetupState = 'ENTERING_LINE';
     let inputBuffer = "";
     let selectedLine = null;
     let watchId = null;
 
-    // Zmienne mapy
+    // Zmienne mapy i warstw
     let map = null;
-    let userMarker, stopMarker, routePolyline;
+    let userDot, userAccuracyCircle, stopMarker, routeToNextStopPolyline, fullRoutePolyline;
     let currentStops = [];
     let currentStopIndex = -1;
     
     // --- GŁÓWNA LOGIKA APLIKACJI ---
 
-    // 1. Wczytaj dane o trasach
     fetch('moje_trasy.json')
         .then(response => response.json())
         .then(data => { allData = data; });
 
-    // 2. Obsługa klawiatury
     keypad.addEventListener('click', (e) => {
         if (!e.target.classList.contains('keypad-btn')) return;
-
         const key = e.target.textContent;
-
-        if (key === 'C') {
-            resetSetup();
-        } else if (key === 'OK') {
-            handleOkClick();
-        } else {
-            inputBuffer += key;
-            updateDisplay();
-        }
+        if (key === 'C') resetSetup();
+        else if (key === 'OK') handleOkClick();
+        else { inputBuffer += key; updateDisplay(); }
     });
     
-    // 3. Obsługa przycisku "Wróć"
     backButton.addEventListener('click', () => {
         mapScreen.classList.add('hidden');
         setupScreen.classList.remove('hidden');
         resetSetup();
         if (watchId) navigator.geolocation.clearWatch(watchId);
-        if (map && routePolyline) map.removeLayer(routePolyline);
+        if (map) {
+            if (routeToNextStopPolyline) map.removeLayer(routeToNextStopPolyline);
+            if (fullRoutePolyline) map.removeLayer(fullRoutePolyline);
+        }
     });
 
     // --- FUNKCJE ZARZĄDZAJĄCE STANEM USTAWIEŃ ---
@@ -78,9 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ibisLine2.textContent = 'PODAJ NR LINII I ZATWIERDŹ';
         } else if (currentSetupState === 'CHOOSING_DIRECTION') {
             ibisLine1.textContent = `LINIA: ${selectedLine.numer}`;
-            let directionsText = selectedLine.kierunki
-                .map((dir, index) => `${index + 1}. ${dir.nazwa}`)
-                .join('\n');
+            const directionsText = selectedLine.kierunki.map((dir, i) => `${i + 1}. ${dir.nazwa}`).join('\n');
             ibisLine2.textContent = `WYBIERZ KIERUNEK:\n${directionsText}`;
         }
     }
@@ -99,8 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (currentSetupState === 'CHOOSING_DIRECTION') {
             const directionIndex = parseInt(inputBuffer, 10) - 1;
             if (selectedLine.kierunki[directionIndex]) {
-                const selectedDirection = selectedLine.kierunki[directionIndex];
-                startNavigation(selectedDirection.przystanki);
+                startNavigation(selectedLine.kierunki[directionIndex].przystanki);
             } else {
                 ibisLine2.textContent = 'BŁĄD: ZŁY KIERUNEK';
                 inputBuffer = "";
@@ -111,12 +101,25 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- FUNKCJE ZARZĄDZAJĄCE NAWIGACJĄ I MAPĄ ---
 
     function initializeMap() {
-        if (map) return; // Inicjuj mapę tylko raz
-        map = L.map('map', { zoomControl: false }).setView([52.14, 21.23], 14);
+        if (map) return;
+        
+        // NOWOŚĆ: Wyłączenie przybliżania podwójnym kliknięciem
+        map = L.map('map', { zoomControl: false, doubleClickZoom: false }).setView([52.14, 21.23], 14);
+        
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
         L.control.zoom({ position: 'bottomright' }).addTo(map);
-        userMarker = L.marker([0, 0]).addTo(map);
-        stopMarker = L.marker([0, 0]).addTo(map);
+
+        // NOWOŚĆ: Definicja ikon
+        const busIcon = L.icon({
+            iconUrl: 'https://cdn-icons-png.flaticon.com/512/3448/3448339.png', // URL do ikony autobusu
+            iconSize: [32, 32],
+            iconAnchor: [16, 32],
+        });
+
+        // NOWOŚĆ: Stworzenie warstw dla lokalizacji i przystanku
+        userDot = L.circleMarker([0, 0], { radius: 8, className: 'user-location-dot' }).addTo(map);
+        userAccuracyCircle = L.circle([0, 0], { radius: 0, className: 'user-accuracy-circle' }).addTo(map);
+        stopMarker = L.marker([0, 0], { icon: busIcon }).addTo(map);
     }
 
     function startNavigation(stops) {
@@ -127,21 +130,23 @@ document.addEventListener('DOMContentLoaded', () => {
         mapScreen.classList.remove('hidden');
         
         initializeMap();
-        setTimeout(() => map.invalidateSize(), 100); // Ważne!
+        setTimeout(() => map.invalidateSize(), 100);
+
+        // NOWOŚĆ: Rysowanie pełnej trasy na starcie
+        drawFullRouteLine(stops);
 
         if (navigator.geolocation) {
             watchId = navigator.geolocation.watchPosition(positionUpdate, handleError, { enableHighAccuracy: true });
-        } else {
-            alert("Geolokalizacja nie jest wspierana.");
-        }
+        } else { alert("Geolokalizacja nie jest wspierana."); }
     }
     
     function positionUpdate(position) {
-        // ... (reszta kodu nawigacji jest prawie identyczna jak poprzednio)
-        // Poniżej wklejamy kod z poprzedniej wersji, bo jest dobry!
-        const { latitude, longitude } = position.coords;
+        const { latitude, longitude, accuracy } = position.coords;
         const userCoords = [latitude, longitude];
-        userMarker.setLatLng(userCoords);
+        
+        // NOWOŚĆ: Aktualizacja kropki i okręgu dokładności
+        userDot.setLatLng(userCoords);
+        userAccuracyCircle.setLatLng(userCoords).setRadius(accuracy);
 
         if (currentStopIndex === -1) {
             currentStopIndex = findNearestStopIndex(latitude, longitude, currentStops);
@@ -157,27 +162,41 @@ document.addEventListener('DOMContentLoaded', () => {
         distanceToStopEl.innerText = `${Math.round(distance)} m`;
         upcomingStopNameEl.innerText = upcoming ? upcoming.nazwa : 'Koniec trasy';
 
-        drawRouteToStop(userCoords, targetStop.wspolrzedne);
+        drawRouteToNextStop(userCoords, targetStop.wspolrzedne);
 
         if (distance < 20) {
             currentStopIndex++;
             if (currentStopIndex >= currentStops.length) {
                 alert("Koniec trasy!");
-                backButton.click(); // Wróć do menu
+                backButton.click();
             }
         }
     }
+    
+    // NOWOŚĆ: Funkcja do rysowania pełnej trasy (przystanek po przystanku)
+    function drawFullRouteLine(stops) {
+        if (map && fullRoutePolyline) {
+            map.removeLayer(fullRoutePolyline);
+        }
+        const routePoints = stops.map(stop => stop.wspolrzedne);
+        fullRoutePolyline = L.polyline(routePoints, { 
+            color: '#888', // Szary kolor dla ogólnej trasy
+            weight: 4, 
+            opacity: 0.7,
+            dashArray: '5, 10' // Linia przerywana
+        }).addTo(map);
+    }
 
-    async function drawRouteToStop(startCoords, endCoords) {
-        if (ORS_API_KEY === '5b3ce3597851110001cf6248a991e35a46bb42e081be692630cc09ac') return;
+    async function drawRouteToNextStop(startCoords, endCoords) {
+        if (ORS_API_KEY === '5b3ce3597851110001cf6248a991e35a46bb42e081be692630cc09ac' || !ORS_API_KEY) return;
         const url = `https://api.openrouteservice.org/v2/directions/cycling-road?api_key=${ORS_API_KEY}&start=${startCoords[1]},${startCoords[0]}&end=${endCoords[1]},${endCoords[0]}`;
         try {
             const response = await fetch(url);
             const data = await response.json();
             if (data.features && data.features.length > 0) {
                 const routeCoordinates = data.features[0].geometry.coordinates.map(c => [c[1], c[0]]);
-                if (routePolyline) map.removeLayer(routePolyline);
-                routePolyline = L.polyline(routeCoordinates, { color: '#0A84FF', weight: 5, opacity: 0.8 }).addTo(map);
+                if (map && routeToNextStopPolyline) map.removeLayer(routeToNextStopPolyline);
+                routeToNextStopPolyline = L.polyline(routeCoordinates, { color: '#0A84FF', weight: 5, opacity: 0.8 }).addTo(map);
             }
         } catch (error) { console.error('Błąd trasy:', error); }
     }
