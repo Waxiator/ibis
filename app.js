@@ -14,13 +14,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Elementy ekranu mapy
     const backButton = document.getElementById('back-button');
-    const followButton = document.getElementById('follow-button');
+    const followButton = document.getElementById('follow-button'); // NOWOŚĆ
     const nextStopNameEl = document.getElementById('next-stop-name');
     const distanceToStopEl = document.getElementById('distance-to-stop');
     const upcomingStopNameEl = document.getElementById('upcoming-stop-name');
-    
-    // NOWOŚĆ: Referencja do elementu audio
-    const passSound = document.getElementById('pass-sound');
 
     // Zmienne stanu aplikacji
     let allData = null;
@@ -28,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let inputBuffer = "";
     let selectedLine = null;
     let watchId = null;
-    let isFollowing = true;
+    let isFollowing = true; // NOWOŚĆ: Stan śledzenia
 
     // Zmienne mapy i warstw
     let map = null;
@@ -58,11 +55,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // NOWOŚĆ: Obsługa przycisku śledzenia
     followButton.addEventListener('click', () => {
-        isFollowing = !isFollowing;
+        isFollowing = !isFollowing; // Zmień stan
         followButton.classList.toggle('follow-active', isFollowing);
         if (isFollowing && userDot) {
-            map.panTo(userDot.getLatLng());
+            map.panTo(userDot.getLatLng()); // Jeśli włączamy, wycentruj od razu
         }
     });
 
@@ -112,6 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
         userAccuracyCircle = L.circle([0, 0], { radius: 0, className: 'user-accuracy-circle' }).addTo(map);
         stopMarker = L.marker([0, 0], { icon: busIcon }).addTo(map);
         
+        // NOWOŚĆ: Wyłączanie śledzenia, gdy użytkownik ręcznie przesunie mapę
         map.on('dragstart', () => {
             isFollowing = false;
             followButton.classList.remove('follow-active');
@@ -121,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function startNavigation(stops) {
         currentStops = stops;
         currentStopIndex = -1;
-        isFollowing = true;
+        isFollowing = true; // Domyślnie włącz śledzenie
         followButton.classList.add('follow-active');
         
         setupScreen.classList.add('hidden');
@@ -143,13 +142,14 @@ document.addEventListener('DOMContentLoaded', () => {
         userDot.setLatLng(userCoords);
         userAccuracyCircle.setLatLng(userCoords).setRadius(accuracy);
 
+        // NOWOŚĆ: Przesuwaj mapę tylko, jeśli tryb śledzenia jest włączony
         if (isFollowing) {
             map.panTo(userCoords);
         }
 
         if (currentStopIndex === -1) {
             currentStopIndex = findNearestStopIndex(latitude, longitude, currentStops);
-            if (!isFollowing) map.setView(userCoords, 16);
+            if (!isFollowing) map.setView(userCoords, 16); // Ustaw widok tylko na starcie, jeśli śledzenie jest wyłączone
         }
 
         const targetStop = currentStops[currentStopIndex];
@@ -164,9 +164,6 @@ document.addEventListener('DOMContentLoaded', () => {
         drawRouteToNextStop(userCoords, targetStop.wspolrzedne);
 
         if (distance < 20) {
-            // NOWOŚĆ: Odtwórz dźwięk
-            passSound.play().catch(error => console.log("Błąd odtwarzania dźwięku:", error));
-
             currentStopIndex++;
             if (currentStopIndex >= currentStops.length) {
                 alert("Koniec trasy!");
