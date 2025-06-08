@@ -44,9 +44,12 @@
         <div id="info-panel">
             <button id="back-button">MENU</button>
             <div class="stop-info current-stop">
-                <p class="label">NASTĘPNY PUNKT</p>
-                <h2 id="next-stop-name">---</h2>
-                <p class="distance" id="distance-to-stop">---</p>
+                <div class="stop-details">
+                    <p class="label">NASTĘPNY PUNKT</p>
+                    <h2 id="next-stop-name">---</h2>
+                    <p class="distance" id="distance-to-stop">---</p>
+                </div>
+                <div id="demand-led"></div>
             </div>
             <div class="stop-info next-in-line">
                 <p class="label">KOLEJNY</p>
@@ -57,5 +60,6 @@
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="app.js"></script>
+    <audio id="pass-sound" src="https://cdn.pixabay.com/audio/2022/03/15/audio_2c649d235c.mp3" preload="auto"></audio>
 </body>
 </html>
