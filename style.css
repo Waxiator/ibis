@@ -1,12 +1,14 @@
+/* Definicje zmiennych kolorów i animacji */
 :root {
     --bg-color: #121212;
     --primary-text: #EAEAEA;
     --secondary-text: #A0A0A0;
-    --display-bg: #1A261A;
-    --display-text: #42FF42;
-    --keypad-bg: #333;
-    --keypad-bg-hover: #444;
+    --panel-bg: rgba(28, 28, 30, 0.85);
     --accent-color: #0A84FF;
+    --green-color: #30D158;
+    --red-color: #FF453A;
+    --border-color: rgba(84, 84, 88, 0.65);
+    /* Bezpieczne obszary dla iPhone'a */
     --safe-area-top: env(safe-area-inset-top, 0px);
     --safe-area-bottom: env(safe-area-inset-bottom, 20px);
 }
@@ -14,134 +16,145 @@
 body, html {
     margin: 0;
     padding: 0;
-    height: 100dvh;
+    height: 100dvh; /* <--- NOWA, POPRAWNA WARTOŚĆ */
     width: 100%;
     overflow: hidden;
-    font-family: 'Roboto Mono', monospace;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     background-color: var(--bg-color);
     color: var(--primary-text);
 }
 
-.hidden {
-    display: none !important;
-}
-
-/* --- EKRAN USTAWIEŃ --- */
-#setup-screen {
-    display: flex;
-    flex-direction: column;
+#map {
     height: 100%;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-    box-sizing: border-box;
-}
-
-#ibis-display {
-    background-color: var(--display-bg);
-    border: 2px solid #444;
-    border-radius: 8px;
-    padding: 20px;
     width: 100%;
-    max-width: 400px;
-    box-sizing: border-box;
-    margin-bottom: 30px;
-    text-transform: uppercase;
-    font-weight: 700;
+    background-color: #000;
 }
 
-#ibis-line-1 { font-size: 24px; color: var(--display-text); margin-bottom: 10px; min-height: 28px; }
-#ibis-line-2 { font-size: 16px; color: var(--primary-text); white-space: pre-wrap; min-height: 40px; }
-
-#keypad {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-    width: 100%;
-    max-width: 400px;
+/* Stylizacja kontrolek na górze */
+#controls {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 10px;
+    padding-top: calc(10px + var(--safe-area-top));
+    background: linear-gradient(to bottom, rgba(0,0,0,0.8), rgba(0,0,0,0));
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap; /* <--- TA LINIA POZWALA PRZENOSIĆ ELEMENTY DO NOWEJ LINII */
+    z-index: 1001;
 }
 
-.keypad-btn {
-    font-family: 'Roboto Mono', monospace;
-    background-color: var(--keypad-bg);
-    color: var(--primary-text);
-    border: none;
+#controls select, #controls button {
+    padding: 10px 15px;
+    font-size: 16px;
     border-radius: 12px;
-    font-size: 28px;
-    font-weight: 500;
-    aspect-ratio: 1.2 / 1;
-    cursor: pointer;
-    transition: background-color 0.2s;
+    border: none;
+    font-weight: 600;
+    background-color: var(--panel-bg);
+    color: var(--primary-text);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+
+    /* --- NOWE REGUŁY ZARZĄDZANIA SZEROKOŚCIĄ --- */
+    flex-grow: 1; /* Pozwól elementom rosnąć, aby wypełnić przestrzeń */
+    flex-shrink: 1; /* Pozwól elementom się kurczyć, jeśli jest za ciasno */
+    min-width: 100px; /* Nie pozwól im być węższymi niż 100px */
+    text-overflow: ellipsis; /* Jeśli tekst się nie mieści, pokaż "..." */
 }
 
-.keypad-btn:active { background-color: var(--keypad-bg-hover); }
-.keypad-btn-util { background-color: #555; }
+/* Osobna reguła dla przycisku, aby nie rozciągał się niepotrzebnie */
+#controls button {
+    flex-grow: 0; /* Przycisk nie będzie się rozciągał */
+    background-color: var(--green-color);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
 
-/* --- EKRAN MAPY --- */
-#map-screen { height: 100%; width: 100%; }
-#map { height: 100%; width: 100%; background-color: #000; }
+#controls button {
+    background-color: var(--green-color);
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
 
+/* Panel informacyjny na dole */
 #info-panel {
     position: fixed;
     bottom: 0;
     left: 0;
     right: 0;
-    background-color: rgba(28, 28, 30, 0.85);
+    background-color: var(--panel-bg);
     padding: 15px 20px;
     padding-bottom: var(--safe-area-bottom);
-    border-top: 1px solid rgba(84, 84, 88, 0.65);
+    border-top: 1px solid var(--border-color);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     z-index: 1001;
     display: flex;
     flex-direction: column;
     gap: 10px;
+    /* Animacja wejścia */
+    transform: translateY(100%);
+    animation: slideIn 0.5s forwards ease-out;
 }
 
-#back-button {
-    position: absolute;
-    top: -45px;
-    right: 15px;
-    background-color: var(--keypad-bg);
+@keyframes slideIn {
+    to { transform: translateY(0); }
+}
+
+.stop-info {
+    transition: opacity 0.5s ease;
+}
+
+.stop-info.fade-out {
+    animation: fadeOut 0.4s forwards;
+}
+
+@keyframes fadeOut {
+    to { opacity: 0; transform: translateY(-20px); }
+}
+
+.label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--secondary-text);
+    margin: 0 0 4px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.current-stop h2 {
+    font-size: 24px;
+    margin: 0;
     color: var(--primary-text);
-    border: none;
-    border-radius: 8px;
-    padding: 8px 15px;
-    font-family: 'Roboto Mono', monospace;
-    font-size: 14px;
-    cursor: pointer;
+    font-weight: 700;
 }
 
-.stop-info .label { font-size: 12px; font-weight: 700; color: var(--secondary-text); margin: 0 0 4px 0; text-transform: uppercase; }
-.current-stop h2 { font-size: 24px; margin: 0; color: var(--primary-text); font-weight: 700; }
-.current-stop .distance { font-size: 18px; margin: 4px 0 0 0; color: var(--accent-color); font-weight: 700; }
-.next-in-line h3 { font-size: 18px; margin: 0; color: var(--secondary-text); font-weight: 700; }
-
-/* --- NOWE STYLE DLA MAPY I IKON --- */
-
-/* Ciemny motyw dla mapy */
-.leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) brightness(95%) contrast(90%); }
-.leaflet-control-zoom a { background-color: rgba(28, 28, 30, 0.85) !important; color: var(--primary-text) !important; border:none !important; }
-.leaflet-marker-icon { filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
-
-/* Styl dla niebieskiej kropki lokalizacji */
-.user-location-dot {
-    background-color: var(--accent-color);
-    border-radius: 50%;
-    border: 2px solid white;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+.current-stop .distance {
+    font-size: 18px;
+    margin: 4px 0 0 0;
+    color: var(--accent-color);
+    font-weight: 600;
 }
 
-/* Styl dla okręgu dokładności GPS */
-.user-accuracy-circle {
-    background-color: var(--accent-color);
-    opacity: 0.15;
-    border-radius: 50%;
-    animation: pulse 2s infinite;
+.next-in-line h3 {
+    font-size: 18px;
+    margin: 0;
+    color: var(--secondary-text);
+    font-weight: 600;
 }
 
-@keyframes pulse {
-    0% { transform: scale(0.9); }
-    70% { transform: scale(1); }
-    100% { transform: scale(0.9); }
+/* Dostosowanie stylu Leaflet do ciemnego motywu */
+.leaflet-tile-pane {
+    filter: invert(1) hue-rotate(180deg) brightness(95%) contrast(90%);
+}
+
+.leaflet-control-zoom a {
+    background-color: var(--panel-bg) !important;
+    color: var(--primary-text) !important;
+    border-color: var(--border-color) !important;
+}
+
+.leaflet-marker-icon {
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
 }
