@@ -22,7 +22,9 @@ body, html {
     color: var(--primary-text);
 }
 
-.hidden { display: none !important; }
+.hidden {
+    display: none !important;
+}
 
 /* --- EKRAN USTAWIEŃ --- */
 #setup-screen { display: flex; flex-direction: column; height: 100%; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; }
@@ -46,41 +48,14 @@ body, html {
 .current-stop .distance { font-size: 18px; margin: 4px 0 0 0; color: var(--accent-color); font-weight: 700; }
 .next-in-line h3 { font-size: 18px; margin: 0; color: var(--secondary-text); font-weight: 700; }
 
-/* --- NOWE STYLE --- */
-#follow-button {
-    position: fixed;
-    bottom: calc(var(--safe-area-bottom) + 120px); /* Pozycjonowanie nad panelem info */
-    right: 15px;
-    z-index: 1001;
-    width: 50px;
-    height: 50px;
-    background-color: rgba(60, 60, 60, 0.8);
-    border: 1px solid rgba(120, 120, 120, 0.5);
-    border-radius: 50%;
-    color: #fff;
-    cursor: pointer;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    transition: background-color 0.3s, color 0.3s;
-}
-
-#follow-button.follow-active {
-    background-color: var(--accent-color);
-    color: #fff;
-    border: none;
-}
-
+#follow-button { position: fixed; bottom: calc(var(--safe-area-bottom) + 120px); right: 15px; z-index: 1001; width: 50px; height: 50px; background-color: rgba(60, 60, 60, 0.8); border: 1px solid rgba(120, 120, 120, 0.5); border-radius: 50%; color: #fff; cursor: pointer; display: flex; justify-content: center; align-items: center; padding: 10px; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); transition: background-color 0.3s, color 0.3s; }
+#follow-button.follow-active { background-color: var(--accent-color); color: #fff; border: none; }
 #follow-button svg { width: 100%; height: 100%; }
 
 /* --- STYLE MAPY I IKON --- */
 .leaflet-tile-pane { filter: invert(1) hue-rotate(180deg) brightness(95%) contrast(90%); }
-.leaflet-control-zoom { position: fixed !important; bottom: calc(var(--safe-area-bottom) + 180px); right: 5px; } /* Podniesienie zoomu */
+.leaflet-control-zoom { position: fixed !important; bottom: calc(var(--safe-area-bottom) + 180px); right: 5px; }
 .leaflet-control-zoom a { background-color: rgba(60, 60, 60, 0.8) !important; color: var(--primary-text) !important; border:1px solid rgba(120, 120, 120, 0.5) !important; }
-
 .user-location-dot { background-color: var(--accent-color); border-radius: 50%; border: 2px solid white; box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); }
 .user-accuracy-circle { background-color: var(--accent-color); opacity: 0.15; border-radius: 50%; animation: pulse 2s infinite; }
 @keyframes pulse { 0% { transform: scale(0.9); } 70% { transform: scale(1); } 100% { transform: scale(0.9); } }
