@@ -12,9 +12,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }).addTo(map);
     L.control.zoom({ position: 'bottomright' }).addTo(map);
 
-    // NOWA LINIA - każe mapie przeliczyć swój rozmiar po 100ms
-    setTimeout(() => map.invalidateSize(), 100);
-
     const userMarker = L.marker([0, 0]).addTo(map);
     const stopMarker = L.marker([0, 0]).addTo(map);
     let routePolyline = null; // Warstwa do rysowania trasy
