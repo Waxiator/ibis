@@ -1,117 +1,215 @@
 {
-    "linie": [
-      {
-        "numer": "001",
-        "nazwa": "Metalizacja <-> PKP Józefów",
-        "kierunki": [
-          {
-            "nazwa": "PKP Józefów",
-            "przystanki": [
-              { "nazwa": "Metalizacja 01", "wspolrzedne": [52.12202, 21.20925] },
-              { "nazwa": "Godebskiego 01", "wspolrzedne": [52.12344, 21.21142] },
-              { "nazwa": "Łąkowa 01", "wspolrzedne": [52.1261, 21.2156] },
-              { "nazwa": "Prusa 01", "wspolrzedne": [52.12807, 21.21868] },
-              { "nazwa": "Sienkiewicza 01", "wspolrzedne": [52.13072, 21.22405] },
-              { "nazwa": "3-go Maja 01", "wspolrzedne": [52.1328, 21.22776] },
-              { "nazwa": "Świderska 01", "wspolrzedne": [52.13496, 21.23166] },
-              { "nazwa": "Urząd Miasta 01", "wspolrzedne": [52.13646, 21.23472] },
-              { "nazwa": "PKP Józefów 01", "wspolrzedne": [52.13618, 21.23597] }
-            ]
-          },
-          {
-            "nazwa": "Metalizacja",
-            "przystanki": [
-              { "nazwa": "PKP Józefów 01", "wspolrzedne": [52.13618, 21.23597] },
-              { "nazwa": "Sosnowa 01", "wspolrzedne": [52.13517, 21.23409] },
-              { "nazwa": "Świderska 01", "wspolrzedne": [52.13496, 21.23166] },
-              { "nazwa": "3-go Maja 01", "wspolrzedne": [52.1328, 21.22776] },
-              { "nazwa": "Sienkiewicza 01", "wspolrzedne": [52.13072, 21.22405] },
-              { "nazwa": "Prusa 01", "wspolrzedne": [52.12807, 21.21868] },
-              { "nazwa": "Łąkowa 01", "wspolrzedne": [52.1261, 21.2156] },
-              { "nazwa": "Godebskiego 01", "wspolrzedne": [52.12344, 21.21142] },
-              { "nazwa": "Metalizacja 01", "wspolrzedne": [52.12202, 21.20925] }
-            ]
-          }
-        ]
-      },
-      {
-        "numer": "002",
-        "nazwa": "Metalizacja <-> PKP Józefów (przez ICSiR)",
-        "kierunki": [
-          {
-            "nazwa": "PKP Józefów",
-            "przystanki": [
-              { "nazwa": "Metalizacja 01", "wspolrzedne": [52.12202, 21.20925] },
-              { "nazwa": "Godebskiego 01", "wspolrzedne": [52.12344, 21.21142] },
-              { "nazwa": "Łąkowa 01", "wspolrzedne": [52.1261, 21.2156] },
-              { "nazwa": "Prusa 01", "wspolrzedne": [52.12807, 21.21868] },
-              { "nazwa": "Wyszyńskiego 01", "wspolrzedne": [52.13004, 21.22379] },
-              { "nazwa": "Leśna 01", "wspolrzedne": [52.12878, 21.22611] },
-              { "nazwa": "ICSIR 01", "wspolrzedne": [52.12831, 21.2283] },
-              { "nazwa": "Powstańców Warszawy 01", "wspolrzedne": [52.12712, 21.23019] },
-              { "nazwa": "Oczyszczalnia Ścieków 01", "wspolrzedne": [52.12599, 21.23425] },
-              { "nazwa": "Szkoła Strumienie 01", "wspolrzedne": [52.1266, 21.23778] },
-              { "nazwa": "Jarosławska 01", "wspolrzedne": [52.12831, 21.24006] },
-              { "nazwa": "Powstańców Warszawy", "wspolrzedne": [52.1331, 21.23903] },
-              { "nazwa": "Leśna 02", "wspolrzedne": [52.13511, 21.23707] },
-              { "nazwa": "PKP Józefów 01", "wspolrzedne": [52.13618, 21.23597] }
-            ]
-          },
-          {
-            "nazwa": "Metalizacja",
-            "przystanki": [
-              { "nazwa": "PKP Józefów 01", "wspolrzedne": [52.13618, 21.23597] },
-              { "nazwa": "Leśna 02", "wspolrzedne": [52.13511, 21.23707] },
-              { "nazwa": "Powstańców Warszawy", "wspolrzedne": [52.1331, 21.23903] },
-              { "nazwa": "Jarosławska 01", "wspolrzedne": [52.12831, 21.24006] },
-              { "nazwa": "Szkoła Strumienie 01", "wspolrzedne": [52.1266, 21.23778] },
-              { "nazwa": "Oczyszczalnia Ścieków 01", "wspolrzedne": [52.12599, 21.23425] },
-              { "nazwa": "Powstańców Warszawy 01", "wspolrzedne": [52.12712, 21.23019] },
-              { "nazwa": "ICSIR 01", "wspolrzedne": [52.12831, 21.2283] },
-              { "nazwa": "Leśna 01", "wspolrzedne": [52.12878, 21.22611] },
-              { "nazwa": "Wyszyńskiego 01", "wspolrzedne": [52.13004, 21.22379] },
-              { "nazwa": "Prusa 01", "wspolrzedne": [52.12807, 21.21868] },
-              { "nazwa": "Łąkowa 01", "wspolrzedne": [52.1261, 21.2156] },
-              { "nazwa": "Godebskiego 01", "wspolrzedne": [52.12344, 21.21142] },
-              { "nazwa": "Metalizacja 01", "wspolrzedne": [52.12202, 21.20925] }
-            ]
-          }
-        ]
-      },
-      {
-        "numer": "003",
-        "nazwa": "Michalin <-> Ogrodowa",
-        "kierunki": [
-          {
-            "nazwa": "Michalin",
-            "przystanki": [
-              { "nazwa": "Ogrodowa 01", "wspolrzedne": [52.13125, 21.22168] },
-              { "nazwa": "Zielona 01", "wspolrzedne": [52.13304, 21.21932] },
-              { "nazwa": "Polna 01", "wspolrzedne": [52.13478, 21.21736] },
-              { "nazwa": "Cmentarz Publiczny 01", "wspolrzedne": [52.13732, 21.21685] },
-              { "nazwa": "Szeroka 01", "wspolrzedne": [52.13986, 21.21604] },
-              { "nazwa": "Proszkowa 01", "wspolrzedne": [52.14273, 21.21524] },
-              { "nazwa": "Szkoła 01 [nż]", "wspolrzedne": [52.14463, 21.21456] },
-              { "nazwa": "Szkoła 02", "wspolrzedne": [52.14555, 21.2145] },
-              { "nazwa": "Michalin 01", "wspolrzedne": [52.14676, 21.21621] }
-            ]
-          },
-          {
-            "nazwa": "Ogrodowa",
-            "przystanki": [
-              { "nazwa": "Michalin 01", "wspolrzedne": [52.14676, 21.21621] },
-              { "nazwa": "Pogodna 01", "wspolrzedne": [52.14622, 21.21718] },
-              { "nazwa": "Szkoła 03", "wspolrzedne": [52.14548, 21.2165] },
-              { "nazwa": "Szkoła 01 [nż]", "wspolrzedne": [52.14463, 21.21456] },
-              { "nazwa": "Proszkowa 01", "wspolrzedne": [52.14273, 21.21524] },
-              { "nazwa": "Szeroka 01", "wspolrzedne": [52.13986, 21.21604] },
-              { "nazwa": "Cmentarz Publiczny 01", "wspolrzedne": [52.13732, 21.21685] },
-              { "nazwa": "Polna 01", "wspolrzedne": [52.13478, 21.21736] },
-              { "nazwa": "Zielona 01", "wspolrzedne": [52.13304, 21.21932] },
-              { "nazwa": "Ogrodowa 01", "wspolrzedne": [52.13125, 21.22168] }
-            ]
-          }
-        ]
-      }
-    ]
-  }
+  "linie": [
+    {
+      "numer": "001",
+      "nazwa": "Metalizacja <-> PKP Józefów",
+      "kierunki": [
+        {
+          "nazwa": "PKP Józefów",
+          "przystanki": [
+            { "nazwa": "Metalizacja 01", "wspolrzedne": [52.12202, 21.20925] },
+            { "nazwa": "Godebskiego 01", "wspolrzedne": [52.12344, 21.21142] },
+            { "nazwa": "Łąkowa 01", "wspolrzedne": [52.1261, 21.2156] },
+            { "nazwa": "Prusa 01", "wspolrzedne": [52.12807, 21.21868] },
+            { "nazwa": "Sienkiewicza 01", "wspolrzedne": [52.13072, 21.22405] },
+            { "nazwa": "3-go Maja 01", "wspolrzedne": [52.1328, 21.22776] },
+            { "nazwa": "Świderska 01", "wspolrzedne": [52.13496, 21.23166] },
+            { "nazwa": "Urząd Miasta 01", "wspolrzedne": [52.13646, 21.23472] },
+            { "nazwa": "PKP Józefów 01", "wspolrzedne": [52.13618, 21.23597] }
+          ]
+        },
+        {
+          "nazwa": "Metalizacja",
+          "przystanki": [
+            { "nazwa": "PKP Józefów 01", "wspolrzedne": [52.13618, 21.23597] },
+            { "nazwa": "Sosnowa 01", "wspolrzedne": [52.13517, 21.23409] },
+            { "nazwa": "Świderska 01", "wspolrzedne": [52.13496, 21.23166] },
+            { "nazwa": "3-go Maja 01", "wspolrzedne": [52.1328, 21.22776] },
+            { "nazwa": "Sienkiewicza 01", "wspolrzedne": [52.13072, 21.22405] },
+            { "nazwa": "Prusa 01", "wspolrzedne": [52.12807, 21.21868] },
+            { "nazwa": "Łąkowa 01", "wspolrzedne": [52.1261, 21.2156] },
+            { "nazwa": "Godebskiego 01", "wspolrzedne": [52.12344, 21.21142] },
+            { "nazwa": "Metalizacja 01", "wspolrzedne": [52.12202, 21.20925] }
+          ]
+        }
+      ]
+    },
+    {
+      "numer": "002",
+      "nazwa": "Metalizacja <-> PKP Józefów (przez ICSiR)",
+      "kierunki": [
+        {
+          "nazwa": "PKP Józefów",
+          "przystanki": [
+            { "nazwa": "Metalizacja 01", "wspolrzedne": [52.12202, 21.20925] },
+            { "nazwa": "Godebskiego 01", "wspolrzedne": [52.12344, 21.21142] },
+            { "nazwa": "Łąkowa 01", "wspolrzedne": [52.1261, 21.2156] },
+            { "nazwa": "Prusa 01", "wspolrzedne": [52.12807, 21.21868] },
+            { "nazwa": "Wyszyńskiego 01", "wspolrzedne": [52.13004, 21.22379] },
+            { "nazwa": "Leśna 01", "wspolrzedne": [52.12878, 21.22611] },
+            { "nazwa": "ICSIR 01", "wspolrzedne": [52.12792, 21.22828] },
+            { "nazwa": "Powstańców Warszawy 01", "wspolrzedne": [52.12712, 21.23019] },
+            { "nazwa": "Oczyszczalnia Ścieków 01", "wspolrzedne": [52.12599, 21.23425] },
+            { "nazwa": "Szkoła Strumienie 01", "wspolrzedne": [52.1266, 21.23778] },
+            { "nazwa": "Jarosławska 01", "wspolrzedne": [52.12831, 21.24006] },
+            { "nazwa": "Powstańców Warszawy", "wspolrzedne": [52.1331, 21.23903] },
+            { "nazwa": "Leśna 02", "wspolrzedne": [52.13511, 21.23707] },
+            { "nazwa": "PKP Józefów 01", "wspolrzedne": [52.13618, 21.23597] }
+          ]
+        },
+        {
+          "nazwa": "Metalizacja",
+          "przystanki": [
+            { "nazwa": "PKP Józefów 01", "wspolrzedne": [52.13618, 21.23597] },
+            { "nazwa": "Leśna 02", "wspolrzedne": [52.13511, 21.23707] },
+            { "nazwa": "Powstańców Warszawy", "wspolrzedne": [52.1331, 21.23903] },
+            { "nazwa": "Jarosławska 01", "wspolrzedne": [52.12831, 21.24006] },
+            { "nazwa": "Szkoła Strumienie 01", "wspolrzedne": [52.1266, 21.23778] },
+            { "nazwa": "Oczyszczalnia Ścieków 01", "wspolrzedne": [52.12599, 21.23425] },
+            { "nazwa": "Powstańców Warszawy 01", "wspolrzedne": [52.12712, 21.23019] },
+            { "nazwa": "ICSIR 01", "wspolrzedne": [52.12792, 21.22828] },
+            { "nazwa": "Leśna 01", "wspolrzedne": [52.12878, 21.22611] },
+            { "nazwa": "Wyszyńskiego 01", "wspolrzedne": [52.13004, 21.22379] },
+            { "nazwa": "Prusa 01", "wspolrzedne": [52.12807, 21.21868] },
+            { "nazwa": "Łąkowa 01", "wspolrzedne": [52.1261, 21.2156] },
+            { "nazwa": "Godebskiego 01", "wspolrzedne": [52.12344, 21.21142] },
+            { "nazwa": "Metalizacja 01", "wspolrzedne": [52.12202, 21.20925] }
+          ]
+        }
+      ]
+    },
+    {
+      "numer": "003",
+      "nazwa": "Michalin <-> Ogrodowa",
+      "kierunki": [
+        {
+          "nazwa": "Michalin",
+          "przystanki": [
+            { "nazwa": "Ogrodowa 01", "wspolrzedne": [52.13125, 21.22168] },
+            { "nazwa": "Zielona 01", "wspolrzedne": [52.13304, 21.21932] },
+            { "nazwa": "Polna 01", "wspolrzedne": [52.13478, 21.21736] },
+            { "nazwa": "Cmentarz Publiczny 01", "wspolrzedne": [52.13732, 21.21685] },
+            { "nazwa": "Szeroka 01", "wspolrzedne": [52.13986, 21.21604] },
+            { "nazwa": "Proszkowa 01", "wspolrzedne": [52.14273, 21.21524] },
+            { "nazwa": "Szkoła 01 [nż]", "wspolrzedne": [52.14463, 21.21456] },
+            { "nazwa": "Szkoła 02", "wspolrzedne": [52.14555, 21.2145] },
+            { "nazwa": "Michalin 01", "wspolrzedne": [52.14676, 21.21621] }
+          ]
+        },
+        {
+          "nazwa": "Ogrodowa",
+          "przystanki": [
+            { "nazwa": "Michalin 01", "wspolrzedne": [52.14676, 21.21621] },
+            { "nazwa": "Pogodna 01", "wspolrzedne": [52.14622, 21.21718] },
+            { "nazwa": "Szkoła 03", "wspolrzedne": [52.14548, 21.2165] },
+            { "nazwa": "Szkoła 01 [nż]", "wspolrzedne": [52.14463, 21.21456] },
+            { "nazwa": "Proszkowa 01", "wspolrzedne": [52.14273, 21.21524] },
+            { "nazwa": "Szeroka 01", "wspolrzedne": [52.13986, 21.21604] },
+            { "nazwa": "Cmentarz Publiczny 01", "wspolrzedne": [52.13732, 21.21685] },
+            { "nazwa": "Polna 01", "wspolrzedne": [52.13478, 21.21736] },
+            { "nazwa": "Zielona 01", "wspolrzedne": [52.13304, 21.21932] },
+            { "nazwa": "Ogrodowa 01", "wspolrzedne": [52.13125, 21.22168] }
+          ]
+        }
+      ]
+    },
+    {
+      "numer": "004",
+      "nazwa": "PKP Falenica <-> Świder-Kościół",
+      "kierunki": [
+        {
+          "nazwa": "Świder-Kościół",
+          "przystanki": [
+            { "nazwa": "PKP Falenica 02", "wspolrzedne": [52.15988, 21.21244] },
+            { "nazwa": "Owocowa 01", "wspolrzedne": [52.15712, 21.21515] },
+            { "nazwa": "Żakowska 01", "wspolrzedne": [52.15455, 21.21772] },
+            { "nazwa": "Wąska 01", "wspolrzedne": [52.152, 21.22025] },
+            { "nazwa": "Armii Krajowej 01", "wspolrzedne": [52.15034, 21.22187] },
+            { "nazwa": "PKP Michalin 01", "wspolrzedne": [52.1482, 21.22398] },
+            { "nazwa": "Rozkoszna 01", "wspolrzedne": [52.14536, 21.22698] },
+            { "nazwa": "Cicha 01", "wspolrzedne": [52.14207, 21.23026] },
+            { "nazwa": "Polna 03", "wspolrzedne": [52.13793, 21.23423] },
+            { "nazwa": "PKP Józefów 01", "wspolrzedne": [52.13618, 21.23597] },
+            { "nazwa": "Leśna 02", "wspolrzedne": [52.13511, 21.23707] },
+            { "nazwa": "Powstańców Warszawy 02", "wspolrzedne": [52.1331, 21.23903] },
+            { "nazwa": "Jarosławska 01", "wspolrzedne": [52.12831, 21.24006] },
+            { "nazwa": "Świder 01", "wspolrzedne": [52.12518, 21.24218] },
+            { "nazwa": "Świder-Kościół 01", "wspolrzedne": [52.12314, 21.24392] }
+          ]
+        },
+        {
+          "nazwa": "PKP Falenica",
+          "przystanki": [
+            { "nazwa": "Świder-Kościół 01", "wspolrzedne": [52.12314, 21.24392] },
+            { "nazwa": "Świder 01", "wspolrzedne": [52.12518, 21.24218] },
+            { "nazwa": "Jarosławska 01", "wspolrzedne": [52.12831, 21.24006] },
+            { "nazwa": "Powstańców Warszawy 02", "wspolrzedne": [52.1331, 21.23903] },
+            { "nazwa": "Leśna 02", "wspolrzedne": [52.13511, 21.23707] },
+            { "nazwa": "PKP Józefów 01", "wspolrzedne": [52.13618, 21.23597] },
+            { "nazwa": "Polna 03", "wspolrzedne": [52.13793, 21.23423] },
+            { "nazwa": "Cicha 01", "wspolrzedne": [52.14207, 21.23026] },
+            { "nazwa": "Rozkoszna 01", "wspolrzedne": [52.14536, 21.22698] },
+            { "nazwa": "PKP Michalin 01", "wspolrzedne": [52.1482, 21.22398] },
+            { "nazwa": "Armii Krajowej 01", "wspolrzedne": [52.15034, 21.22187] },
+            { "nazwa": "Wąska 01", "wspolrzedne": [52.152, 21.22025] },
+            { "nazwa": "Żakowska 01", "wspolrzedne": [52.15455, 21.21772] },
+            { "nazwa": "Owocowa 01", "wspolrzedne": [52.15712, 21.21515] },
+            { "nazwa": "PKP Falenica 02", "wspolrzedne": [52.15988, 21.21244] }
+          ]
+        }
+      ]
+    },
+    {
+      "numer": "E1",
+      "nazwa": "PKP Falenica <-> Metalizacja",
+      "kierunki": [
+        {
+          "nazwa": "PKP Falenica",
+          "przystanki": [
+            { "nazwa": "Metalizacja 01", "wspolrzedne": [52.12202, 21.20925] },
+            { "nazwa": "Dworska 01 [nż]", "wspolrzedne": [52.12116, 21.20463] },
+            { "nazwa": "Świdry Małe 01", "wspolrzedne": [52.12373, 21.20083] },
+            { "nazwa": "Baśniowa 01 [nż]", "wspolrzedne": [52.12618, 21.19836] },
+            { "nazwa": "Polna 02", "wspolrzedne": [52.12896, 21.19715] },
+            { "nazwa": "Konwaliowa 01", "wspolrzedne": [52.13361, 21.19332] },
+            { "nazwa": "Strzelnica 9 01 [nż]", "wspolrzedne": [52.14, 21.1911] },
+            { "nazwa": "Graniczna 01 [nż]", "wspolrzedne": [52.14296, 21.19041] },
+            { "nazwa": "Ks. Malinowskiego 01", "wspolrzedne": [52.14608, 21.18966] },
+            { "nazwa": "Nadwiślańska 01", "wspolrzedne": [52.14947, 21.18909] },
+            { "nazwa": "Os. Werbeny 01", "wspolrzedne": [52.15006, 21.19494] },
+            { "nazwa": "Jachowicza 01 [nż]", "wspolrzedne": [52.15107, 21.20486] },
+            { "nazwa": "Werbeny 01", "wspolrzedne": [52.15244, 21.21458] },
+            { "nazwa": "Śpiewna 01 [nż]", "wspolrzedne": [52.1567, 21.21041] },
+            { "nazwa": "Bysławska 01", "wspolrzedne": [52.16036, 21.20674] },
+            { "nazwa": "Włókiennicza 01 [nż]", "wspolrzedne": [52.1622, 21.20538] },
+            { "nazwa": "PKP Falenica 01 [nż]", "wspolrzedne": [52.16134, 21.21096] },
+            { "nazwa": "PKP Falenica 02", "wspolrzedne": [52.15988, 21.21244] }
+          ]
+        },
+        {
+          "nazwa": "Metalizacja",
+          "przystanki": [
+            { "nazwa": "PKP Falenica 02", "wspolrzedne": [52.15988, 21.21244] },
+            { "nazwa": "PKP Falenica 01 [nż]", "wspolrzedne": [52.16134, 21.21096] },
+            { "nazwa": "Włókiennicza 01 [nż]", "wspolrzedne": [52.1622, 21.20538] },
+            { "nazwa": "Bysławska 01", "wspolrzedne": [52.16036, 21.20674] },
+            { "nazwa": "Śpiewna 01 [nż]", "wspolrzedne": [52.1567, 21.21041] },
+            { "nazwa": "Werbeny 01", "wspolrzedne": [52.15244, 21.21458] },
+            { "nazwa": "Jachowicza 01 [nż]", "wspolrzedne": [52.15107, 21.20486] },
+            { "nazwa": "Os. Werbeny 01", "wspolrzedne": [52.15006, 21.19494] },
+            { "nazwa": "Nadwiślańska 01", "wspolrzedne": [52.14947, 21.18909] },
+            { "nazwa": "Ks. Malinowskiego 01", "wspolrzedne": [52.14608, 21.18966] },
+            { "nazwa": "Graniczna 01 [nż]", "wspolrzedne": [52.14296, 21.19041] },
+            { "nazwa": "Strzelnica 9 01 [nż]", "wspolrzedne": [52.14, 21.1911] },
+            { "nazwa": "Konwaliowa 01", "wspolrzedne": [52.13361, 21.19332] },
+            { "nazwa": "Polna 02", "wspolrzedne": [52.12896, 21.19715] },
+            { "nazwa": "Baśniowa 01 [nż]", "wspolrzedne": [52.12618, 21.19836] },
+            { "nazwa": "Świdry Małe 01", "wspolrzedne": [52.12373, 21.20083] },
+            { "nazwa": "Dworska 01 [nż]", "wspolrzedne": [52.12116, 21.20463] },
+            { "nazwa": "Metalizacja 01", "wspolrzedne": [52.12202, 21.20925] }
+          ]
+        }
+      ]
+    }
+  ]
+}
